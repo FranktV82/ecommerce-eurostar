@@ -1,0 +1,25 @@
+{
+  "name": "ecommerce-eurostar",
+  "version": "1.0.0",
+  "description": "E-commerce REST API with JWT authentication and checkout",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test:bruno": "cd bruno/ecommerce-eurostar && bru run --env local",
+    "test": "node scripts/run-bruno-tests.js",
+    "test:bruno:ci": "node scripts/run-bruno-tests.js"
+  },
+  "keywords": ["ecommerce", "express", "jwt", "rest-api"],
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "@usebruno/cli": "^3.4.2"
+  }
+}

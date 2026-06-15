@@ -1,0 +1,36 @@
+meta {
+  name: TC-CD-06 Empty ProductIds
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/checkout
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "productIds": [],
+    "paymentMethod": "cash"
+  }
+}
+
+tests {
+  test("status is 400", function() {
+    expect(res.getStatus()).to.equal(400);
+  });
+
+  test("error message is returned", function() {
+    expect(res.getBody().error).to.equal("productIds must be a non-empty array");
+  });
+}

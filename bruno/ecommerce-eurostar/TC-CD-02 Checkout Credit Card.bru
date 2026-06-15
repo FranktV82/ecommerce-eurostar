@@ -1,0 +1,41 @@
+meta {
+  name: TC-CD-02 Checkout Credit Card
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/checkout
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "productIds": [2],
+    "paymentMethod": "credit_card"
+  }
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("no discount for credit card", function() {
+    expect(res.getBody().paymentMethod).to.equal("credit_card");
+    expect(res.getBody().subtotal).to.equal(149);
+    expect(res.getBody().discount).to.equal(0);
+    expect(res.getBody().total).to.equal(149);
+    expect(res.getBody().items[0].id).to.equal(2);
+    expect(res.getBody().items[0].price).to.equal(149);
+  });
+}

@@ -1,0 +1,36 @@
+meta {
+  name: TC-CD-07 Product Not Found
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/checkout
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "productIds": [99],
+    "paymentMethod": "cash"
+  }
+}
+
+tests {
+  test("status is 404", function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+
+  test("error message is returned", function() {
+    expect(res.getBody().error).to.equal("One or more products were not found");
+  });
+}
