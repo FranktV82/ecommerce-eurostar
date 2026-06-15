@@ -29,7 +29,7 @@ Start the server:
 npm start
 ```
 
-The API runs at `http://localhost:3000` by default. You can change the port with the `PORT` environment variable.
+The API runs at `http://localhost:3001` by default. You can change the port with the `PORT` environment variable.
 
 For development with auto-restart on file changes:
 
@@ -228,12 +228,12 @@ Content-Type: application/json
 
 ```bash
 # Login
-curl -X POST http://localhost:3000/login \
+curl -X POST http://localhost:3001/login \
   -H "Content-Type: application/json" \
   -d '{"email":"alice@example.com","password":"password123"}'
 
 # Checkout with cash (replace TOKEN with the JWT from login)
-curl -X POST http://localhost:3000/checkout \
+curl -X POST http://localhost:3001/checkout \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer TOKEN" \
   -d '{"productIds":[1,3],"paymentMethod":"cash"}'
