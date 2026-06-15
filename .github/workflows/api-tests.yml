@@ -1,0 +1,59 @@
+name: API Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  api-tests:
+    name: Run API test automation
+    runs-on: ubuntu-latest
+
+    env:
+      PORT: 3001
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start API in background
+        run: |
+          npm start &
+          echo $! > server.pid
+
+      - name: Wait until API is running
+        run: |
+          echo "Waiting for API health check at http://localhost:${PORT}/healthcheck..."
+          for i in $(seq 1 30); do
+            if curl -sf "http://localhost:${PORT}/healthcheck"; then
+              echo "API is healthy and ready for tests"
+              exit 0
+            fi
+            echo "Attempt ${i}/30: API not ready yet, retrying in 1s..."
+            sleep 1
+          done
+          echo "API did not become ready within 30 seconds"
+          exit 1
+
+      - name: Run API tests
+        run: npm run test:bruno
+
+      - name: Stop API server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then
+            kill "$(cat server.pid)" || true
+          fi
