@@ -1,0 +1,43 @@
+meta {
+  name: TC-CD-01 Checkout Cash
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/checkout
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "productIds": [1, 3],
+    "paymentMethod": "cash"
+  }
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("10% cash discount is applied", function() {
+    expect(res.getBody().paymentMethod).to.equal("cash");
+    expect(res.getBody().subtotal).to.equal(114);
+    expect(res.getBody().discount).to.equal(11.4);
+    expect(res.getBody().total).to.equal(102.6);
+    expect(res.getBody().items[0].id).to.equal(1);
+    expect(res.getBody().items[0].price).to.equal(89);
+    expect(res.getBody().items[1].id).to.equal(3);
+    expect(res.getBody().items[1].price).to.equal(25);
+  });
+}

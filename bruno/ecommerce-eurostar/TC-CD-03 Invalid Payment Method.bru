@@ -1,0 +1,36 @@
+meta {
+  name: TC-CD-03 Invalid Payment Method
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/checkout
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "productIds": [1],
+    "paymentMethod": "paypal"
+  }
+}
+
+tests {
+  test("status is 400", function() {
+    expect(res.getStatus()).to.equal(400);
+  });
+
+  test("error message is returned", function() {
+    expect(res.getBody().error).to.equal("Payment method must be cash or credit_card");
+  });
+}

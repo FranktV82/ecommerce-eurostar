@@ -1,0 +1,36 @@
+meta {
+  name: TC-CD-05 Invalid JWT
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/checkout
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: invalid.token.value
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "productIds": [1],
+    "paymentMethod": "cash"
+  }
+}
+
+tests {
+  test("status is 401", function() {
+    expect(res.getStatus()).to.equal(401);
+  });
+
+  test("error message is returned", function() {
+    expect(res.getBody().error).to.equal("Invalid or expired token");
+  });
+}

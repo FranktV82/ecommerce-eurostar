@@ -1,0 +1,32 @@
+meta {
+  name: TC-CD-04 Missing JWT
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/checkout
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "productIds": [1],
+    "paymentMethod": "cash"
+  }
+}
+
+tests {
+  test("status is 401", function() {
+    expect(res.getStatus()).to.equal(401);
+  });
+
+  test("error message is returned", function() {
+    expect(res.getBody().error).to.equal("Authentication required");
+  });
+}
